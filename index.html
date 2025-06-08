@@ -2,86 +2,111 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Calculadora Simples</title>
+  <title>Jogo do Clique Rápido</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
-    .calculadora {
+
+    .container {
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 240px;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 320px;
     }
-    input[type="text"] {
-      width: 100%;
-      height: 40px;
-      font-size: 20px;
-      text-align: right;
+
+    h1 {
       margin-bottom: 10px;
-      padding: 5px;
+      color: #333;
     }
-    .botoes button {
-      width: 25%;
-      height: 50px;
+
+    .contador {
+      font-size: 36px;
+      margin: 10px 0;
+      color: #007acc;
+    }
+
+    .tempo {
       font-size: 18px;
-      margin: 2px;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    .btn {
+      background: #007acc;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 12px;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #005f99;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <div class="calculadora">
-    <input type="text" id="display" disabled>
-    <div class="botoes">
-      <button onclick="limpar()">C</button>
-      <button onclick="inserir('/')">/</button>
-      <button onclick="inserir('*')">*</button>
-      <button onclick="apagar()">←</button>
-      <button onclick="inserir('7')">7</button>
-      <button onclick="inserir('8')">8</button>
-      <button onclick="inserir('9')">9</button>
-      <button onclick="inserir('-')">-</button>
-      <button onclick="inserir('4')">4</button>
-      <button onclick="inserir('5')">5</button>
-      <button onclick="inserir('6')">6</button>
-      <button onclick="inserir('+')">+</button>
-      <button onclick="inserir('1')">1</button>
-      <button onclick="inserir('2')">2</button>
-      <button onclick="inserir('3')">3</button>
-      <button onclick="calcular()">=</button>
-      <button onclick="inserir('0')" style="width: 50%;">0</button>
-      <button onclick="inserir('.')">.</button>
-    </div>
+  <div class="container">
+    <h1>Jogo do Clique!</h1>
+    <div class="tempo">Tempo restante: <span id="tempo">10</span>s</div>
+    <div class="contador" id="contador">0</div>
+    <button class="btn" id="botao" onclick="clicar()">Clique Aqui!</button>
+    <br><br>
+    <button class="btn" onclick="reiniciar()">Reiniciar</button>
   </div>
 
   <script>
-    let display = document.getElementById('display');
+    let contador = 0;
+    let tempo = 10;
+    let timer;
+    let jogando = false;
 
-    function inserir(valor) {
-      display.value += valor;
-    }
-
-    function limpar() {
-      display.value = '';
-    }
-
-    function apagar() {
-      display.value = display.value.slice(0, -1);
-    }
-
-    function calcular() {
-      try {
-        display.value = eval(display.value);
-      } catch {
-        display.value = 'Erro';
+    function clicar() {
+      if (!jogando) {
+        jogando = true;
+        iniciarContagem();
       }
+      contador++;
+      document.getElementById('contador').innerText = contador;
+    }
+
+    function iniciarContagem() {
+      timer = setInterval(() => {
+        tempo--;
+        document.getElementById('tempo').innerText = tempo;
+        if (tempo <= 0) {
+          clearInterval(timer);
+          document.getElementById('botao').disabled = true;
+          document.querySelector('.tempo').innerHTML = `<strong>Tempo esgotado!</strong>`;
+        }
+      }, 1000);
+    }
+
+    function reiniciar() {
+      contador = 0;
+      tempo = 10;
+      jogando = false;
+      document.getElementById('contador').innerText = '0';
+      document.getElementById('tempo').innerText = '10';
+      document.querySelector('.tempo').innerHTML = 'Tempo restante: <span id="tempo">10</span>s';
+      document.getElementById('botao').disabled = false;
+      clearInterval(timer);
     }
   </script>
 </body>
